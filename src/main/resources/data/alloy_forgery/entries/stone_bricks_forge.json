@@ -1,4 +1,5 @@
 {
+  "type": "alloy_forgery:forge",
   "material": "minecraft:stone_bricks",
   "additional_materials": [
     "minecraft:chiseled_stone_bricks"

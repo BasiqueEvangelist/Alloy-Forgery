@@ -25,18 +25,6 @@ public class ForgeRegistry {
     private static final Set<Block> CONTROLLER_BLOCKS = new HashSet<>();
     private static final Set<Block> CONTROLLER_BLOCKS_VIEW = Collections.unmodifiableSet(CONTROLLER_BLOCKS);
 
-    static void registerDefinition(Identifier forgeDefinitionId, ForgeDefinition definition) {
-        final var controllerBlock = new ForgeControllerBlock(definition);
-        final var controllerBlockRegistryId = AlloyForgery.id(Registry.BLOCK.getId(definition.material()).getPath() + "_forge_controller");
-
-        Registry.register(Registry.BLOCK, controllerBlockRegistryId, controllerBlock);
-        Registry.register(Registry.ITEM, controllerBlockRegistryId, new ForgeControllerItem(controllerBlock, new Item.Settings().group(AlloyForgery.ALLOY_FORGERY_GROUP)));
-
-        TagInjector.injectBlocks(MINEABLE_PICKAXE, controllerBlock);
-
-        store(forgeDefinitionId, definition, controllerBlock);
-    }
-
     public static Optional<ForgeDefinition> getForgeDefinition(Identifier id) {
         return FORGE_DEFINITION_REGISTRY.containsKey(id) ? Optional.of(FORGE_DEFINITION_REGISTRY.get(id)) : Optional.empty();
     }
@@ -57,27 +45,16 @@ public class ForgeRegistry {
         return CONTROLLER_BLOCKS_VIEW;
     }
 
-    private static void store(Identifier id, ForgeDefinition definition, ForgeControllerBlock block) {
+    public static void store(Identifier id, ForgeDefinition definition, ForgeControllerBlock block) {
         FORGE_DEFINITION_REGISTRY.put(id, definition);
         CONTROLLER_BLOCK_REGISTRY.put(id, block);
         CONTROLLER_BLOCKS.add(block);
     }
 
-    public static final class Loader implements ModDataConsumer {
-
-        public static final Loader INSTANCE = new Loader();
-
-        private Loader() {}
-
-        @Override
-        public String getDataSubdirectory() {
-            return "alloy_forges";
-        }
-
-        @Override
-        public void acceptParsedFile(Identifier id, JsonObject object) {
-            ForgeDefinition.loadAndEnqueue(id, object);
-        }
+    public static void unstore(Identifier id) {
+        FORGE_DEFINITION_REGISTRY.remove(id);
+        var block = CONTROLLER_BLOCK_REGISTRY.remove(id);
+        CONTROLLER_BLOCKS.remove(block);
     }
 
 }

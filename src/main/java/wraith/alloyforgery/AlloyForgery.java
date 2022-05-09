@@ -1,7 +1,6 @@
 package wraith.alloyforgery;
 
 import io.wispforest.owo.itemgroup.OwoItemGroup;
-import io.wispforest.owo.moddata.ModDataLoader;
 import io.wispforest.owo.particles.ClientParticles;
 import io.wispforest.owo.particles.systems.ParticleSystem;
 import io.wispforest.owo.particles.systems.ParticleSystemController;
@@ -18,7 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import wraith.alloyforgery.block.ForgeControllerBlockEntity;
-import wraith.alloyforgery.forges.ForgeRegistry;
+import wraith.alloyforgery.forges.ForgeEntry;
 import wraith.alloyforgery.forges.FuelDataLoader;
 import wraith.alloyforgery.recipe.AlloyForgeRecipe;
 import wraith.alloyforgery.recipe.AlloyForgeRecipeSerializer;
@@ -46,11 +45,12 @@ public class AlloyForgery implements ModInitializer {
 
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(FuelDataLoader.INSTANCE);
 
-        ModDataLoader.load(ForgeRegistry.Loader.INSTANCE);
+        ForgeEntry.init();
         FORGE_CONTROLLER_BLOCK_ENTITY = ForgeControllerBlockEntity.Type.INSTANCE;
 
         Registry.register(Registry.BLOCK_ENTITY_TYPE, id("forge_controller"), FORGE_CONTROLLER_BLOCK_ENTITY);
-        FluidStorage.SIDED.registerSelf(FORGE_CONTROLLER_BLOCK_ENTITY);
+        // TODO: fix
+//        FluidStorage.SIDED.registerSelf(FORGE_CONTROLLER_BLOCK_ENTITY);
 
         Registry.register(Registry.RECIPE_TYPE, AlloyForgeRecipe.Type.ID, AlloyForgeRecipe.Type.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, AlloyForgeRecipe.Type.ID, AlloyForgeRecipeSerializer.INSTANCE);

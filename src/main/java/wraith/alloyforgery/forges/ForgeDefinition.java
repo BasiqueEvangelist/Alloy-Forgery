@@ -12,13 +12,14 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public record ForgeDefinition(int forgeTier,
                               float speedMultiplier,
                               int fuelCapacity,
                               int maxSmeltTime,
                               Block material,
-                              ImmutableList<Block> additionalMaterials) {
+                              List<Block> additionalMaterials) {
 
     private static final int BASE_MAX_SMELT_TIME = 200;
     //why kubejs why
@@ -46,33 +47,8 @@ public record ForgeDefinition(int forgeTier,
                     }
                     """;
 
-    private ForgeDefinition(int forgeTier, float speedMultiplier, int fuelCapacity, Block material, ImmutableList<Block> additionalMaterials) {
+    public ForgeDefinition(int forgeTier, float speedMultiplier, int fuelCapacity, Block material, List<Block> additionalMaterials) {
         this(forgeTier, speedMultiplier, fuelCapacity, (int) (BASE_MAX_SMELT_TIME / speedMultiplier), material, additionalMaterials);
-    }
-
-    public static void loadAndEnqueue(Identifier id, JsonObject json) {
-
-        final int forgeTier = JsonHelper.getInt(json, "tier");
-        final float speedMultiplier = JsonHelper.getFloat(json, "speed_multiplier", 1);
-        final int fuelCapacity = JsonHelper.getInt(json, "fuel_capacity", 48000);
-
-        final var mainMaterialId = Identifier.tryParse(JsonHelper.getString(json, "material"));
-
-        final var additionalMaterialIds = new ArrayList<Identifier>();
-        JsonHelper.getArray(json, "additional_materials", new JsonArray()).forEach(jsonElement -> additionalMaterialIds.add(Identifier.tryParse(jsonElement.getAsString())));
-
-        final var action = ComplexRegistryAction.Builder.create(() -> {
-            final var mainMaterial = Registry.BLOCK.get(mainMaterialId);
-            final var additionalMaterialsBuilder = new ImmutableList.Builder<Block>();
-            additionalMaterialIds.forEach(identifier -> additionalMaterialsBuilder.add(Registry.BLOCK.get(identifier)));
-
-            final var definition = new ForgeDefinition(forgeTier, speedMultiplier, fuelCapacity, mainMaterial, additionalMaterialsBuilder.build());
-
-            ForgeRegistry.registerDefinition(id, definition);
-
-        }).entry(mainMaterialId).entries(additionalMaterialIds).build();
-
-        ModCompatHelpers.getRegistryHelper(Registry.BLOCK).runWhenPresent(action);
     }
 
     public boolean isBlockValid(Block block) {

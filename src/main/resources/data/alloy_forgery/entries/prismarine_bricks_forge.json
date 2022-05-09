@@ -1,4 +1,5 @@
 {
+  "type": "alloy_forgery:forge",
   "material": "minecraft:prismarine_bricks",
   "tier": 2,
   "speed_multiplier": 1.5,

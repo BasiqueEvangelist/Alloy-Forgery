@@ -1,4 +1,5 @@
 {
+  "type": "alloy_forgery:forge",
   "material": "minecraft:end_stone_bricks",
   "tier": 3,
   "fuel_capacity": 192000,

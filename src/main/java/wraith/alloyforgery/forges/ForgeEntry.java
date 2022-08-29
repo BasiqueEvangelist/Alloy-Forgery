@@ -7,6 +7,9 @@ import me.basiqueevangelist.dynreg.entry.EntryScanContext;
 import me.basiqueevangelist.dynreg.entry.RegistrationEntries;
 import me.basiqueevangelist.dynreg.entry.RegistrationEntry;
 import me.basiqueevangelist.dynreg.entry.json.EntryDescriptionReaders;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -15,6 +18,7 @@ import net.minecraft.util.registry.Registry;
 import wraith.alloyforgery.AlloyForgery;
 import wraith.alloyforgery.ForgeControllerItem;
 import wraith.alloyforgery.block.ForgeControllerBlock;
+import wraith.alloyforgery.block.ForgeControllerBlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,12 +74,15 @@ public class ForgeEntry implements RegistrationEntry {
             .dependency(Registry.BLOCK, controllerBlockRegistryId);
     }
 
+    @SuppressWarnings({"UnstableApiUsage"})
     @Override
     public void register(EntryRegisterContext ctx) {
         var def = new ForgeDefinition(forgeTier, speedMultiplier, fuelCapacity, Registry.BLOCK.get(mainMaterialId), additionalMaterialIds.stream().map(Registry.BLOCK::get).toList());
 
         var block = ctx.register(Registry.BLOCK, controllerBlockRegistryId, new ForgeControllerBlock(def));
         ForgeRegistry.store(id, def, block);
+
+        FluidStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, context) -> (ForgeControllerBlockEntity) blockEntity, block);
 
         // TODO: put blocks in tags.
 

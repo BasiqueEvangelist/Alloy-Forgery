@@ -39,7 +39,6 @@ public class AlloyForgery implements ModInitializer {
     });
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")
     public void onInitialize() {
         ALLOY_FORGE_SCREEN_HANDLER_TYPE = ScreenHandlerRegistry.registerSimple(id("alloy_forge"), AlloyForgeScreenHandler::new);
 
@@ -49,8 +48,6 @@ public class AlloyForgery implements ModInitializer {
         FORGE_CONTROLLER_BLOCK_ENTITY = ForgeControllerBlockEntity.Type.INSTANCE;
 
         Registry.register(Registry.BLOCK_ENTITY_TYPE, id("forge_controller"), FORGE_CONTROLLER_BLOCK_ENTITY);
-        // TODO: fix
-//        FluidStorage.SIDED.registerSelf(FORGE_CONTROLLER_BLOCK_ENTITY);
 
         Registry.register(Registry.RECIPE_TYPE, AlloyForgeRecipe.Type.ID, AlloyForgeRecipe.Type.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, AlloyForgeRecipe.Type.ID, AlloyForgeRecipeSerializer.INSTANCE);
